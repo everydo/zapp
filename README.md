@@ -36,6 +36,9 @@ zapp：易度应用开发框架
 ===========
 - ztq
 - zapian
+- zope.annotations
+- zope.intid
+- zope.interface
 
 开发环境
 ================
