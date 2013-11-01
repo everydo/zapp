@@ -39,6 +39,7 @@ zapp：易度应用开发框架
 - zope.annotations
 - zope.intid
 - zope.interface
+- zope.security
 
 开发环境
 ================
