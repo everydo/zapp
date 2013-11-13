@@ -6,44 +6,7 @@ zapp：易度应用开发框架
 - 易度工作平台是基于这个框架开发的
 - 这个框架提供了易度扩展应用的线下运行调试环境
 
-主要功能
-===============
-
-- 表单
-- 流程
-- 脚本
-- 规则
-- 元数据
-- 状态
-- 日志
-- 通知
-- 订阅
-- 版本
-- 索引
-- 回收站
-- 权限
-- 软件包管理：启动自动加载软件包
-
-不包括的内容
-====================
-- 用户和组管理，必须连到易度系统才能工作
-- 多租户运营管理
-
-依赖
-===========
-- ztq
-- zapian
-- zope.annotations
-- zope.intid
-- zope.interface
-- zope.security
-
-开发环境
-================
-- pyramid
-- ZODB
-- redis
-- bootstrap UI
+开发环境： pyramid + ZODB + redis + bootstrap UI
 
 使用介绍
 ==========================
@@ -64,9 +27,9 @@ zapp：易度应用开发框架
 
     def my_add(x, y):
         return x+y
-        
+       
     def my_add2(x, y):
-        return call_script('zopen.hello.my_add', x, y)
+        return edo_apps.zopen.hello.my_add(x, y)
 
 表单
 ---------------
@@ -74,9 +37,9 @@ zapp：易度应用开发框架
 
     form = Form(TextField(name='asdfa'),
                 SelectField(name=''))
-    template = form.genTemplate() # 可传入表单样式 div/table
+    template = form.render_template(layout='div') # 可传入表单样式 div/table
     # 渲染表单
-    form =  form.render(template, {}, request, fields.keys(), errors,
+    form =  form.render(template, data={}, request, fields.keys(), errors,
                         context=context, container = container)
 
 提交保存表单，可能存在校验:
@@ -86,3 +49,77 @@ zapp：易度应用开发框架
 
 流程
 -------------------
+定义一个流程(流程由表单、步骤、阶段、设置这几部分组成):
+
+    workflow = WorkFlow(form, wf_steps=[], wf_config=[], wf_stages=[])
+
+创建一个流程表单：
+
+    tasks = [] # 当前没有任务，下一行，会自动根据当前任务来渲染可编辑项
+    workflow.render(form, data=None, tasks, request, template, errors)
+
+提交流程表单：
+
+    errors = workflow.save(request, tasks, errors)
+    errors = worflow.submit(task, action_name, data, request, as_principal=None, comment="")
+
+基本内容
+---------------------------
+基本内容包括文件夹Folder和条目Item:
+
+    # 文件夹支持排序
+    wf1 = root['wf1'] = Folder()
+    item1 = wf1['item1' = Item()
+    
+唯一ID
+---------------------
+intid管理，注册，根据id，得到对象
+
+权限管理
+--------------------
+pid和rol的管理
+
+扩展属性
+---------------------------
+定义一个扩展属性:
+
+    Metadata(form, )
+
+对象关系
+--------------
+
+规则
+-----------------------
+每个容器可以定义自己的规则，规则可以继承
+
+状态
+--------------
+每个对象可以包括一组状态
+
+日志
+-------------
+方便记录对象的日志
+
+通知
+-------------
+发送通知
+
+订阅
+-----------
+设置对象的订阅人
+
+版本
+-----
+所有Item支持版本管理
+
+回收站
+------------
+所有对象删除进入回收站
+
+索引和搜索
+-------------
+加入索引，方便搜索
+
+软件包管理
+-------------------
+安装软件包、部署软件包
