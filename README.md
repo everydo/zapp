@@ -44,3 +44,45 @@ zapp：易度应用开发框架
 - ZODB
 - redis
 - bootstrap UI
+
+使用介绍
+==========================
+
+一个视图
+-----------
+在apps文件夹中创建一个文件夹, zopen.hello，里面放入views.py:
+
+      @view_config(permission="Public", template="None")
+      def hello(context, request):
+          return 'hello, world'
+        
+直接访问 http://server_port/@@@zopen.hello.hello 即可
+
+调用函数
+--------------------
+在zopen.hello中放入utils.py:
+
+    def my_add(x, y):
+        return x+y
+        
+    def my_add2(x, y):
+        return call_script('zopen.hello.my_add', x, y)
+
+表单
+---------------
+可以这么来显示一个表单:
+
+    form = Form(TextField(name='asdfa'),
+                SelectField(name=''))
+    template = form.genTemplate() # 可传入表单样式 div/table
+    # 渲染表单
+    form =  form.render(template, {}, request, fields.keys(), errors,
+                        context=context, container = container)
+
+提交保存表单，可能存在校验:
+
+    results = {}  # 结果保存到这里
+    errors = form.save(fields.keys(), results, request, context=context, container=container)
+
+流程
+-------------------
